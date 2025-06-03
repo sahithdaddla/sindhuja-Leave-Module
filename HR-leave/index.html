@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Leave Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-banner h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            width: 95%;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .leave-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .leave-table th,
+        .leave-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .leave-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .leave-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .leave-table .status-pending { color: #ff9800; }
+        .leave-table .status-approved { color: #4CAF50; }
+        .leave-table .status-rejected { color: #f44336; }
+
+        .leave-table .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .clear-btn {
+            background-color: #ff9800;
+        }
+
+        .clear-btn:hover {
+            background-color: #e68a00;
+        }
+
+        .edit-btn {
+            background-color: #2196F3;
+            white-space: nowrap;
+        }
+
+        .edit-btn:hover {
+            background-color: #1976D2;
+        }
+
+        .view-btn {
+            background-color: #009688;
+            white-space: nowrap;
+        }
+
+        .view-btn:hover {
+            background-color: #00796b;
+        }
+
+        .action-bar {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        select:hover {
+            border-color: #999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            position: relative;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .view-modal-content {
+            background-color: #f9f9f9;
+            border: 2px solid #009688;
+        }
+
+        .view-modal-content h2 {
+            color: #009688;
+            border-bottom: 2px solid #009688;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .view-modal-content .modal-buttons button {
+            background-color: #009688;
+        }
+
+        .view-modal-content .modal-buttons button:hover {
+            background-color: #00796b;
+        }
+
+        .view-modal-content .edit-btn {
+            background-color: #0288d1;
+            height: 36px;
+            line-height: 20px;
+            padding: 8px 12px;
+            margin-left: 10px;
+        }
+
+        .view-modal-content .edit-btn:hover {
+            background-color: #0277bd;
+        }
+
+        .view-modal-content .button-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-modal-content .action-select {
+            background: linear-gradient(to bottom, #ffffff 0%, #e0f2f1 100%);
+            border: 1px solid #009688;
+            height: 36px;
+            padding: 8px;
+            line-height: 20px;
+        }
+
+        .view-modal-content .action-select:hover {
+            background: linear-gradient(to bottom, #e0f2f1 0%, #b2dfdb 100%);
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:read-only,
+        .form-group textarea:read-only {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+
+        .search-container input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.2);
+        }
+
+        .search-container input::placeholder {
+            color: #aaa;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-container select {
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .filter-container select:hover {
+            border-color: #2196F3;
+        }
+
+        .filter-container button {
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .action-select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #ccc;
+        }
+
+        .action-select:hover {
+            border-color: #2196F3;
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e6e6e6 100%);
+        }
+
+        .action-select option {
+            font-weight: normal;
+            background-color: white;
+        }
+
+        .action-select option[value="approved"] {
+            color: #4CAF50;
+        }
+
+        .action-select option[value="rejected"] {
+            color: #f44336;
+        }
+
+        .no-records {
+            background: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            color: #666;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        /* Confirmation Modal Styling */
+        .confirm-modal-content {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 0;
+            width: 90%;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .confirm-modal-header {
+            background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .confirm-modal-body {
+            padding: 20px;
+            text-align: center;
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px 20px;
+        }
+
+        .confirm-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .cancel-btn {
+            background-color: #757575;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background-color: #616161;
+        }
+
+        /* Success Modal Styling */
+        #successModal {
+            background-color: transparent; /* Remove dark overlay */
+            z-index: 1001; /* Ensure above other modals */
+        }
+
+        .success-modal-content {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            animation: slideIn 0.3s ease-in-out;
+            border-left: 5px solid #4CAF50;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-modal-content.error {
+            border-left-color: #f44336;
+        }
+
+        .success-modal-content.error .icon {
+            color: #f44336;
+        }
+
+        .success-modal-content .icon {
+            color: #4CAF50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .success-modal-content p {
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-content, .confirm-modal-content, .success-modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .success-modal-content {
+                right: 10px;
+                top: 10px;
+                max-width: 250px;
+            }
+
+            .leave-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .header-banner h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            select {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            .header-banner h1 {
+                font-size: 1.2rem;
+            }
+
+            .modal-content, .confirm-modal-content, .success-modal-content {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .success-modal-content {
+                right: 5px;
+                top: 5px;
+                max-width: 200px;
+                padding: 10px;
+            }
+
+            .success-modal-content .icon {
+                font-size: 1.5rem;
+            }
+
+            .success-modal-content p {
+                font-size: 0.85rem;
+            }
+
+            .confirm-modal-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .confirm-btn, .cancel-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-banner">
+        <h1>HR Leave Application</h1>
+    </div>
+    <div class="container">
+        <div class="action-bar">
+            <div class="search-container">
+                <input type="text" id="allSearchInput" placeholder="Search by Employee Name, Employee ID, Leave Type, Reason...">
+            </div>
+            <div class="filter-container">
+                <select id="filterStatus" onchange="filterRecords()">
+                    <option value="all">All Status</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <button class="clear-btn" onclick="showClearOptions()">Clear All Records</button>
+            </div>
+        </div>
+        <table class="leave-table" id="allLeaveHistory">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Leave Type</th>
+                    <th>Status</th>
+                    <th>Request Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content view-modal-content">
+            <h2>View Leave Request</h2>
+            <div class="form-group">
+                <label>Employee Name:</label>
+                <input type="text" id="viewEmployeeName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Employee ID:</label>
+                <input type="text" id="viewEmployeeId" readonly>
+            </div>
+            <div class="form-group">
+                <label>Leave Type:</label>
+                <input type="text" id="viewLeaveType" readonly>
+            </div>
+            <div class="form-group">
+                <label>Start Date:</label>
+                <input type="text" id="viewStartDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>End Date:</label>
+                <input type="text" id="viewEndDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>Reason:</label>
+                <textarea id="viewReason" readonly></textarea>
+            </div>
+            <div class="form-group">
+                <label>Status:</label>
+                <input type="text" id="viewStatus" readonly>
+            </div>
+            <div class="form-group" id="viewActions"></div>
+            <div class="modal-buttons">
+                <button onclick="closeModal('viewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Leave Request</h2>
+            <div class="form-group">
+                <label>Employee Name:</label>
+                <input type="text" id="editEmployeeName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Employee ID:</label>
+                <input type="text" id="editEmployeeId" readonly>
+            </div>
+            <div class="form-group">
+                <label>Leave Type:</label>
+                <input type="text" id="editLeaveType" readonly>
+            </div>
+            <div class="form-group">
+                <label>Start Date:</label>
+                <input type="text" id="editStartDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>End Date:</label>
+                <input type="text" id="editEndDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>Reason:</label>
+                <textarea id="editReason" readonly></textarea>
+            </div>
+            <div class="form-group">
+                <label>Status:</label>
+                <select id="editStatus">
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="closeModal('editModal')">Cancel</button>
+                <button onclick="saveEditedRequest()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Modal -->
+    <div id="clearModal" class="modal">
+        <div class="modal-content">
+            <h2>Clear All Records</h2>
+            <p>Are you sure you want to clear all records? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button onclick="closeModal('clearModal')">Cancel</button>
+                <button class="clear-btn" onclick="confirmClearRecords()">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirm-modal-content">
+            <div class="confirm-modal-header">Confirm Action</div>
+            <div class="confirm-modal-body" id="confirmMessage"></div>
+            <div class="confirm-modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('confirmModal')">Cancel</button>
+                <button class="confirm-btn" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content success-modal-content">
+            <i class="fas fa-check-circle icon"></i>
+            <p id="successMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000'; // Change this if backend runs on a different port
+
+        async function getLeaveRequests() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/leave-requests`, {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}: ${response.statusText || 'Unknown error'}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching leave requests:', error.message, error.stack || 'No stack trace');
+                if (error.name === 'TypeError') {
+                    console.error(`Possible network issue or backend server not running on ${BASE_URL}`);
+                } else if (error.name === 'AbortError') {
+                    console.error('Request timed out after 5 seconds');
+                }
+                return [];
+            }
+        }
+        
+        let leaveRequests = [];
+        let currentEditId = null;
+
+        async function searchAllRecords() {
+            const searchQuery = document.getElementById('allSearchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatus').value;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+
+            try {
+                const url = searchQuery
+                    ? `${BASE_URL}/api/leave-requests/search?search=${encodeURIComponent(searchQuery)}&status=${statusFilter}`
+                    : `${BASE_URL}/api/leave-requests?status=${statusFilter}`;
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}: ${response.statusText || 'Unknown error'}`);
+                }
+
+                const filteredRequests = await response.json();
+                displayFilteredAllRequests(filteredRequests);
+            } catch (error) {
+                console.error('Error searching leave requests:', error.message, error.stack || 'No stack trace');
+                if (error.name === 'TypeError') {
+                    console.error(`Possible network issue or backend server not running on ${BASE_URL}`);
+                } else if (error.name === 'AbortError') {
+                    console.error('Request timed out after 5 seconds');
+                }
+                showSuccessModal(`Failed to search leave requests: ${error.message || 'Unable to connect to server'}`, true);
+                displayFilteredAllRequests([]);
+            }
+        }
+
+        function displayFilteredAllRequests(filteredRequests) {
+            const historyBody = document.querySelector('#allLeaveHistory tbody');
+            historyBody.innerHTML = '';
+
+            if (!filteredRequests || filteredRequests.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="6" class="no-records">No records found</td></tr>';
+                return;
+            }
+
+            filteredRequests.forEach(request => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.employee_name || 'N/A'}</td>
+                    <td>${request.employee_id}</td>
+                    <td>${request.leave_type}</td>
+                    <td><span class="status-${request.status}">${request.status}</span></td>
+                    <td>${new Date(request.request_date).toLocaleDateString()}</td>
+                    <td class="button-group">
+                        <button class="view-btn" onclick="viewRequest(${request.id})">View</button>
+                    </td>
+                `;
+                historyBody.appendChild(row);
+            });
+        }
+
+        function viewRequest(requestId) {
+            leaveRequests = getLeaveRequests();
+            leaveRequests.then(requests => {
+                const request = requests.find(req => req.id === requestId);
+                if (request) {
+                    document.getElementById('viewEmployeeName').value = request.employee_name || 'N/A';
+                    document.getElementById('viewEmployeeId').value = request.employee_id;
+                    document.getElementById('viewLeaveType').value = request.leave_type;
+                    document.getElementById('viewStartDate').value = request.start_date || 'N/A';
+                    document.getElementById('viewEndDate').value = request.end_date || 'N/A';
+                    document.getElementById('viewReason').value = request.reason || 'N/A';
+                    document.getElementById('viewStatus').value = request.status;
+                    
+                    const actionsDiv = document.getElementById('viewActions');
+                    actionsDiv.innerHTML = `
+                        <div class="button-group">
+                            ${request.status === 'pending' ? `
+                                <select class="action-select" onchange="updateLeaveStatus(${request.id}, this.value)">
+                                    <option value="">Select Action</option>
+                                    <option value="approved">Approve</option>
+                                    <option value="rejected">Reject</option>
+                                </select>
+                            ` : ''}
+                            <button class="edit-btn" onclick="editRequest(${request.id})">Edit</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('viewModal').style.display = 'block';
+                } else {
+                    showSuccessModal('Leave request not found.', true);
+                }
+            }).catch(error => {
+                console.error('Error viewing request:', error.message, error.stack || 'No stack trace');
+                showSuccessModal(`Failed to view leave request: ${error.message || 'Unknown error'}`, true);
+            });
+        }
+
+        function editRequest(requestId) {
+            currentEditId = requestId;
+            leaveRequests = getLeaveRequests();
+            leaveRequests.then(requests => {
+                const request = requests.find(req => req.id === requestId);
+                if (request) {
+                    document.getElementById('editEmployeeName').value = request.employee_name || 'N/A';
+                    document.getElementById('editEmployeeId').value = request.employee_id;
+                    document.getElementById('editLeaveType').value = request.leave_type;
+                    document.getElementById('editStartDate').value = request.start_date || 'N/A';
+                    document.getElementById('editEndDate').value = request.end_date || 'N/A';
+                    document.getElementById('editReason').value = request.reason || 'N/A';
+                    document.getElementById('editStatus').value = request.status;
+                    
+                    document.getElementById('editModal').style.display = 'block';
+                    document.getElementById('viewModal').style.display = 'none';
+                } else {
+                    showSuccessModal('Leave request not found.', true);
+                }
+            }).catch(error => {
+                console.error('Error editing request:', error.message, error.stack || 'No stack trace');
+                showSuccessModal(`Failed to edit leave request: ${error.message || 'Unknown error'}`, true);
+            });
+        }
+
+        async function saveEditedRequest() {
+            const newStatus = document.getElementById('editStatus').value;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/leave-requests/${currentEditId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error ${response.status}: ${response.statusText || 'Unknown error'}`);
+                }
+
+                const updatedRequest = await response.json();
+                const action = newStatus === 'approved' ? 'approved' : newStatus === 'rejected' ? 'rejected' : 'updated';
+                showSuccessModal(`Leave request has been successfully ${action}.`);
+                closeModal('editModal');
+                searchAllRecords();
+            } catch (error) {
+                console.error('Error updating leave request:', error.message, error.stack || 'No stack trace');
+                if (error.name === 'TypeError') {
+                    console.error(`Possible network issue or backend server not running on ${BASE_URL}`);
+                } else if (error.name === 'AbortError') {
+                    console.error('Request timed out after 5 seconds');
+                }
+                showSuccessModal(`Failed to update leave request: ${error.message || 'Unknown error'}`, true);
+            }
+        }
+
+        async function updateLeaveStatus(requestId, status) {
+            if (status) {
+                showConfirmModal(`Are you sure you want to ${status} this leave request?`, async () => {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+
+                    try {
+                        const response = await fetch(`${BASE_URL}/api/leave-requests/${requestId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status }),
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.error || `HTTP error ${response.status}: ${response.statusText || 'Unknown error'}`);
+                        }
+
+                        const updatedRequest = await response.json();
+                        showSuccessModal(`Leave request has been successfully ${updatedRequest.status}.`);
+                        closeModal('viewModal');
+                        searchAllRecords();
+                    } catch (error) {
+                        console.error('Error updating leave status:', error.message, error.stack || 'No stack trace');
+                        if (error.name === 'TypeError') {
+                            console.error(`Possible network issue or backend server not running on ${BASE_URL}`);
+                        } else if (error.name === 'AbortError') {
+                            console.error('Request timed out after 5 seconds');
+                        }
+                        showSuccessModal(`Failed to update leave request: ${error.message || 'Unknown error'}`, true);
+                    }
+                });
+            }
+        }
+
+        function showClearOptions() {
+            document.getElementById('clearModal').style.display = 'block';
+        }
+
+        async function confirmClearRecords() {
+            showConfirmModal('Are you sure you want to clear all records? This action cannot be undone.', async () => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+
+                try {
+                    const response = await fetch(`${BASE_URL}/api/leave-requests`, {
+                        method: 'DELETE',
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `HTTP error ${response.status}: ${response.statusText || 'Unknown error'}`);
+                    }
+
+                    showSuccessModal('All records have been successfully cleared.');
+                    closeModal('clearModal');
+                    searchAllRecords();
+                } catch (error) {
+                    console.error('Error clearing records:', error.message, error.stack || 'No stack trace');
+                    if (error.name === 'TypeError') {
+                        console.error(`Possible network issue or backend server not running on ${BASE_URL}`);
+                    } else if (error.name === 'AbortError') {
+                        console.error('Request timed out after 5 seconds');
+                    }
+                    showSuccessModal(`Failed to clear records: ${error.message || 'Unknown error'}`, true);
+                }
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showConfirmModal(message, onConfirm) {
+            document.getElementById('confirmMessage').textContent = message;
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            confirmBtn.onclick = () => {
+                closeModal('confirmModal');
+                onConfirm();
+            };
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function showSuccessModal(message, isError = false) {
+            const modalContent = document.querySelector('.success-modal-content');
+            modalContent.classList.remove('error', 'success');
+            modalContent.classList.add(isError ? 'error' : 'success');
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').style.display = 'block';
+            setTimeout(() => {
+                closeModal('successModal');
+            }, 3000);
+        }
+
+        function filterRecords() {
+            searchAllRecords();
+        }
+
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        };
+
+        // Enhanced search functionality with debouncing
+        let searchTimeout;
+        document.getElementById('allSearchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchAllRecords();
+            }, 300); // Debounce for 300ms
+        });
+
+        // Allow search on Enter key
+        document.getElementById('allSearchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                searchAllRecords();
+            }
+        });
+
+        searchAllRecords();
+    </script>
+</body>
+</html>

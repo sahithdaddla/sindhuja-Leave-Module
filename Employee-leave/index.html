@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Request</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 30px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
+            color: white;
+            padding: 5px;
+            border-radius: 8px 8px 0 0;
+            margin: -15px -15px 20px -15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-.895-3-3-3-3 .895-3 3 .895 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        h1 {
+           font-size: 2.2rem;
+           font-weight: 600;
+           letter-spacing: 0.5px;
+           font-family: 'Poppins', sans-serif;
+           margin: 0;
+           text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            color: #444;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            resize: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+        }
+
+        .error {
+            color: #e53935;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .date-error {
+            color: #e53935;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .char-count {
+            color: #666;
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        button[type="submit"] {
+            background-color: #0062E6;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        button[type="submit"]:hover:not(:disabled) {
+            background-color: #0056CC;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-banner">
+            <h1>Employee Leave Application</h1>
+            <div class="header-subtitle">Efficiently manage your time off with our streamlined request system</div>
+        </div>
+        
+        <form id="leaveRequestForm" onsubmit="return submitLeaveRequest(event)">
+            <div class="form-group">
+                <label for="empName">Employee Name:</label>
+                <input type="text" id="empName" name="empName" maxlength="60" required>
+                <div class="error" id="empNameError">Name must be at least 3 characters long (excluding spaces)</div>
+                <div class="error" id="empNameSpaceError">Name cannot be only spaces</div>
+                <div class="error" id="empNameStartSpaceError">Name cannot start with a space</div>
+                <div class="error" id="empNameAlphaError">Name must contain alphabetical characters only</div>
+                <div class="error" id="empNameMultiSpaceError">Multiple consecutive spaces are not allowed</div>
+                <div class="error" id="empNameMaxLengthError">Name cannot exceed 60 characters</div>
+                <div class="char-count" id="empNameCount">Characters (excluding spaces): 0 / 60</div>
+            </div>
+            <div class="form-group">
+                <label for="empid">Employee ID:</label>
+                <input type="text" id="empid" name="empid" maxlength="7" required>
+                <div class="error" id="empidError">Please enter a valid Employee ID (ATS0 followed by 3 digits)</div>
+                <div class="error" id="empidSpaceError">Spaces are not allowed in Employee ID</div>
+                <div class="error" id="empidCharError">Only ATS0 followed by 3 digits is allowed</div>
+                <div class="char-count" id="empidCount">Characters (excluding spaces): 0</div>
+            </div>
+            <div class="form-group">
+                <label for="leaveType">Leave Type:</label>
+                <select id="leaveType" required>
+                    <option value="">Select Leave Type</option>
+                    <option value="annual">Annual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="personal">Personal Leave</option>
+                    <option value="casual">Casual Leave</option>
+                    <option value="maternity">Maternity Leave</option>
+                </select>
+                <div class="error" id="leaveTypeError">Please select a leave type</div>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" required pattern="\d{4}-\d{2}-\d{2}">
+                <div class="error" id="startDateError">Start date cannot be in the past</div>
+                <div class="date-error" id="startDateYearError">Year must be exactly 4 digits</div>
+                <div class="error" id="startDateRequiredError">Start date is required</div>
+                <div class="error" id="startDateFutureError">Start date cannot be more than 7 months in the future</div>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" required pattern="\d{4}-\d{2}-\d{2}">
+                <div class="error" id="endDateError">End date must be after start date</div>
+                <div class="date-error" id="endDateYearError">Year must be exactly 4 digits</div>
+                <div class="error" id="endDateRequiredError">End date is required</div>
+                <div class="error" id="endDateFutureError">End date cannot be more than 7 months in the future</div>
+                <div class="error" id="maternityDurationError">Maternity leave cannot exceed 6 months</div>
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason:</label>
+                <textarea id="reason" rows="4" maxlength="300" required></textarea>
+                <div class="error" id="reasonError">Reason must be at least 5 characters long (excluding spaces)</div>
+                <div class="error" id="reasonSpaceError">Reason cannot be only spaces</div>
+                <div class="error" id="reasonStartSpaceError">Reason cannot start with a space</div>
+                <div class="error" id="reasonAlphaError">Reason must contain alphabetical characters</div>
+                <div class="error" id="reasonSpecialError">Reason must contain alphabetical characters, not just digits or special characters</div>
+                <div class="error" id="reasonMultiSpaceError">Multiple consecutive spaces are not allowed</div>
+                <div class="error" id="reasonMaxLengthError">Reason cannot exceed 300 characters</div>
+                <div class="char-count" id="reasonCount">Characters (excluding spaces): 0 / 300</div>
+            </div>
+            <button type="submit" id="submitBtn" disabled>Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Get the current leave requests from the backend
+        async function getLeaveRequests() {
+            try {
+                const response = await fetch('http://localhost:3000/api/leave-requests');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching leave requests:', error);
+                return [];
+            }
+        }
+        
+        // Keep track of which fields have been touched
+        const touchedFields = {
+            empName: false,
+            empid: false,
+            leaveType: false,
+            startDate: false,
+            endDate: false,
+            reason: false
+        };
+        
+        // Set minimum date and maximum date (7 months from now) for date inputs
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        
+        // Calculate date 7 months from now
+        const sevenMonthsFromNow = new Date();
+        sevenMonthsFromNow.setMonth(today.getMonth() + 7);
+        const maxDateStr = sevenMonthsFromNow.toISOString().split('T')[0];
+        
+        document.getElementById('startDate').min = todayStr;
+        document.getElementById('startDate').max = maxDateStr;
+        document.getElementById('endDate').min = todayStr;
+        document.getElementById('endDate').max = maxDateStr;
+
+        // Track if alphabetical characters have been entered in reason field
+        let reasonHasAlphabetical = false;
+
+        function getCharCount(str) {
+            return str.replace(/\s/g, '').length;
+        }
+
+        function updateCharCount(inputId) {
+            const input = document.getElementById(inputId);
+            const countDisplay = document.getElementById(`${inputId}Count`);
+            if (countDisplay) {
+                const charCount = getCharCount(input.value);
+                if (inputId === 'reason') {
+                    countDisplay.textContent = `Characters (excluding spaces): ${charCount} / 300`;
+                    // Check if character count exceeds the limit
+                    if (charCount > 300) {
+                        document.getElementById('reasonMaxLengthError').style.display = 'block';
+                    } else {
+                        document.getElementById('reasonMaxLengthError').style.display = 'none';
+                    }
+                } else if (inputId === 'empName') {
+                    countDisplay.textContent = `Characters (excluding spaces): ${charCount} / 60`;
+                    // Check if character count exceeds the limit
+                    if (charCount > 60) {
+                        document.getElementById('empNameMaxLengthError').style.display = 'block';
+                    } else {
+                        document.getElementById('empNameMaxLengthError').style.display = 'none';
+                    }
+                } else {
+                    countDisplay.textContent = `Characters (excluding spaces): ${charCount}`;
+                }
+            }
+        }
+
+        function validateDateFormat(dateString) {
+            // Check if the date matches YYYY-MM-DD format with exactly 4 digits for year
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            return dateRegex.test(dateString);
+        }
+
+        // Check for duplicate leave requests (overlapping or same-day requests)
+        async function isDuplicateRequest(empId, startDate, requestDate) {
+            const leaveRequests = await getLeaveRequests();
+            const requestDateStr = new Date(requestDate).toISOString().split('T')[0];
+            return leaveRequests.some(request => {
+                if (request.employee_id !== empId) return false;
+                
+                // Check for overlapping dates
+                const existingStart = new Date(request.start_date);
+                const existingEnd = new Date(request.end_date);
+                const newStart = new Date(startDate);
+                const newEnd = new Date(document.getElementById('endDate').value);
+                const isOverlapping = (newStart <= existingEnd && newEnd >= existingStart);
+                
+                // Check for same-day request
+                const existingRequestDate = new Date(request.request_date).toISOString().split('T')[0];
+                const isSameDay = existingRequestDate === requestDateStr;
+                
+                return isOverlapping || isSameDay;
+            });
+        }
+
+        // Initialize character counts
+        updateCharCount('empName');
+        updateCharCount('empid');
+        updateCharCount('reason');
+
+        // Prevent spaces and invalid characters in Employee Name
+        document.getElementById('empName').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            const value = this.value;
+            
+            // Check for maximum length (60 characters)
+            if (getCharCount(value) >= 60) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Prevent spaces at the beginning
+            if (char === ' ' && value.length === 0) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Prevent multiple consecutive spaces
+            if (char === ' ' && value.charAt(value.length - 1) === ' ') {
+                e.preventDefault();
+                return;
+            }
+            
+            // Allow only alphabetical characters and spaces
+            if (!/[a-zA-Z\s]/.test(char)) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        // Prevent spaces and invalid characters in Employee ID
+        document.getElementById('empid').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            
+            // Allow only A, T, S, and digits
+            if (this.value.length < 4) {
+                // First 4 characters should be ATS0
+                const validChars = {
+                    0: 'A',
+                    1: 'T',
+                    2: 'S',
+                    3: '0'
+                };
+                if (char !== validChars[this.value.length]) {
+                    e.preventDefault();
+                }
+            } else if (this.value.length >= 4) {
+                // After ATS0, only allow digits
+                if (!/\d/.test(char)) {
+                    e.preventDefault();
+                }
+            }
+            
+            // Prevent spaces
+            if (char === ' ') {
+                e.preventDefault();
+            }
+        });
+
+        // Control input for reason textarea
+        document.getElementById('reason').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            const value = this.value;
+            
+            // Check for maximum length (300 characters)
+            if (getCharCount(value) >= 300) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Prevent spaces at the beginning
+            if (char === ' ' && value.length === 0) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Prevent multiple consecutive spaces
+            if (char === ' ' && value.charAt(value.length - 1) === ' ') {
+                e.preventDefault();
+                return;
+            }
+            
+            // Update flag if alphabetical character is typed
+            if (/[a-zA-Z]/.test(char)) {
+                reasonHasAlphabetical = true;
+            }
+            
+            // If no alphabetical characters have been entered yet, only allow alphabetical characters and spaces
+            if (!reasonHasAlphabetical && !/[a-zA-Z\s]/.test(char)) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        // Check for alphabetical characters in existing text when page loads or when text is pasted
+        document.getElementById('reason').addEventListener('input', function() {
+            const value = this.value;
+            reasonHasAlphabetical = /[a-zA-Z]/.test(value);
+            
+            // Update character count and validate field
+            touchedFields.reason = true;
+            updateCharCount('reason');
+            validateField('reason');
+            validateMaternityDuration();
+            validateForm();
+        });
+
+        // Add input listeners for character count and field validation
+        document.getElementById('empName').addEventListener('input', function() {
+            touchedFields.empName = true;
+            updateCharCount('empName');
+            validateField('empName');
+            validateForm();
+        });
+
+        document.getElementById('empid').addEventListener('input', function() {
+            touchedFields.empid = true;
+            updateCharCount('empid');
+            validateField('empid');
+            validateForm();
+        });
+
+        // Handle leave type change for maternity leave
+        document.getElementById('leaveType').addEventListener('change', function() {
+            touchedFields.leaveType = true;
+            validateField('leaveType');
+            if (this.value === 'maternity') {
+                // Set start date to today
+                const startDateInput = document.getElementById('startDate');
+                startDateInput.value = todayStr;
+                touchedFields.startDate = true;
+                validateField('startDate');
+
+                // Set end date to 6 months from today
+                const sixMonthsFromNow = new Date();
+                sixMonthsFromNow.setMonth(today.getMonth() + 6);
+                const endDateStr = sixMonthsFromNow.toISOString().split('T')[0];
+                document.getElementById('endDate').value = endDateStr;
+                touchedFields.endDate = true;
+                validateField('endDate');
+            }
+            validateMaternityDuration();
+            validateForm();
+        });
+
+        document.getElementById('startDate').addEventListener('input', function() {
+            touchedFields.startDate = true;
+            validateField('startDate');
+            validateMaternityDuration();
+            validateForm();
+        });
+        
+        document.getElementById('startDate').addEventListener('change', function() {
+            touchedFields.startDate = true;
+            validateField('startDate');
+            validateMaternityDuration();
+            validateForm();
+        });
+        
+        document.getElementById('endDate').addEventListener('input', function() {
+            touchedFields.endDate = true;
+            validateField('endDate');
+            validateMaternityDuration();
+            validateForm();
+        });
+        
+        document.getElementById('endDate').addEventListener('change', function() {
+            touchedFields.endDate = true;
+            validateField('endDate');
+            validateMaternityDuration();
+            validateForm();
+        });
+
+        // Validate maternity leave duration (max 6 months)
+        function validateMaternityDuration() {
+            const leaveType = document.getElementById('leaveType').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const maternityError = document.getElementById('maternityDurationError');
+            
+            maternityError.style.display = 'none';
+            
+            if (leaveType === 'maternity' && startDate && endDate) {
+                const startDateTime = new Date(startDate);
+                const endDateTime = new Date(endDate);
+                const sixMonthsLater = new Date(startDateTime);
+                sixMonthsLater.setMonth(startDateTime.getMonth() + 6);
+                
+                if (endDateTime > sixMonthsLater) {
+                    maternityError.style.display = 'block';
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function validateField(fieldId) {
+            if (!touchedFields[fieldId]) return true;
+            
+            let isFieldValid = true;
+            
+            switch(fieldId) {
+                case 'empName':
+                    const empName = document.getElementById('empName').value;
+                    const nameLength = getCharCount(empName);
+                    const nameIsOnlySpaces = empName.trim() === '';
+                    const nameStartsWithSpace = empName.startsWith(' ');
+                    const nameHasAlphabetical = /[a-zA-Z]/.test(empName);
+                    const nameHasConsecutiveSpaces = /\s{2,}/.test(empName);
+                    const nameOnlyAlpha = /^[a-zA-Z\s]*$/.test(empName);
+                    
+                    // Reset all error messages
+                    document.getElementById('empNameError').style.display = 'none';
+                    document.getElementById('empNameSpaceError').style.display = 'none';
+                    document.getElementById('empNameStartSpaceError').style.display = 'none';
+                    document.getElementById('empNameAlphaError').style.display = 'none';
+                    document.getElementById('empNameMultiSpaceError').style.display = 'none';
+                    document.getElementById('empNameMaxLengthError').style.display = 'none';
+                    
+                    if (nameLength > 60) {
+                        document.getElementById('empNameMaxLengthError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (nameIsOnlySpaces) {
+                        document.getElementById('empNameSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (nameStartsWithSpace) {
+                        document.getElementById('empNameStartSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (!nameHasAlphabetical || !nameOnlyAlpha) {
+                        document.getElementById('empNameAlphaError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (nameHasConsecutiveSpaces) {
+                        document.getElementById('empNameMultiSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (nameLength < 3) {
+                        document.getElementById('empNameError').style.display = 'block';
+                        isFieldValid = false;
+                    }
+                    break;
+                    
+                case 'empid':
+                    const empid = document.getElementById('empid').value;
+                    const empIdRegex = /^ATS0(?!000)\d{3}$/;
+                    const containsSpaces = /\s/.test(empid);
+                    const containsInvalidChars = !/^ATS0\d*$/.test(empid);
+                    
+                    // Reset all error messages
+                    document.getElementById('empidError').style.display = 'none';
+                    document.getElementById('empidSpaceError').style.display = 'none';
+                    document.getElementById('empidCharError').style.display = 'none';
+                    
+                    if (containsSpaces) {
+                        document.getElementById('empidSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (containsInvalidChars) {
+                        document.getElementById('empidCharError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (!empIdRegex.test(empid)) {
+                        document.getElementById('empidError').style.display = 'block';
+                        isFieldValid = false;
+                    }
+                    break;
+                    
+                case 'leaveType':
+                    const leaveType = document.getElementById('leaveType').value;
+                    if (!leaveType) {
+                        document.getElementById('leaveTypeError').style.display = 'block';
+                        isFieldValid = false;
+                    } else {
+                        document.getElementById('leaveTypeError').style.display = 'none';
+                    }
+                    break;
+                    
+                case 'startDate':
+                    const startDate = document.getElementById('startDate').value;
+                    
+                    // Reset all error messages
+                    document.getElementById('startDateError').style.display = 'none';
+                    document.getElementById('startDateYearError').style.display = 'none';
+                    document.getElementById('startDateRequiredError').style.display = 'none';
+                    document.getElementById('startDateFutureError').style.display = 'none';
+                    
+                    if (!startDate) {
+                        document.getElementById('startDateRequiredError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (!validateDateFormat(startDate)) {
+                        document.getElementById('startDateYearError').style.display = 'block';
+                        isFieldValid = false;
+                    } else {
+                        // Validate date is not in the past
+                        const startDateTime = new Date(startDate);
+                        const todayDateTime = new Date();
+                        todayDateTime.setHours(0, 0, 0, 0);
+                        
+                        if (startDateTime < todayDateTime) {
+                            document.getElementById('startDateError').style.display = 'block';
+                            isFieldValid = false;
+                        }
+                        
+                        // Validate date is not more than 7 months in the future
+                        const sevenMonthsFromNow = new Date();
+                        sevenMonthsFromNow.setMonth(todayDateTime.getMonth() + 7);
+                        
+                        if (startDateTime > sevenMonthsFromNow) {
+                            document.getElementById('startDateFutureError').style.display = 'block';
+                            isFieldValid = false;
+                        }
+                    }
+                    break;
+                    
+                case 'endDate':
+                    const endDate = document.getElementById('endDate').value;
+                    const sDate = document.getElementById('startDate').value;
+                    
+                    // Reset all error messages
+                    document.getElementById('endDateError').style.display = 'none';
+                    document.getElementById('endDateYearError').style.display = 'none';
+                    document.getElementById('endDateRequiredError').style.display = 'none';
+                    document.getElementById('endDateFutureError').style.display = 'none';
+                    document.getElementById('maternityDurationError').style.display = 'none';
+                    
+                    if (!endDate) {
+                        document.getElementById('endDateRequiredError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (!validateDateFormat(endDate)) {
+                        document.getElementById('endDateYearError').style.display = 'block';
+                        isFieldValid = false;
+                    } else {
+                        const endDateTime = new Date(endDate);
+                        const todayDateTime = new Date();
+                        todayDateTime.setHours(0, 0, 0, 0);
+                        
+                        // Validate date is not more than 7 months in the future
+                        const sevenMonthsFromNow = new Date();
+                        sevenMonthsFromNow.setMonth(todayDateTime.getMonth() + 7);
+                        
+                        if (endDateTime > sevenMonthsFromNow) {
+                            document.getElementById('endDateFutureError').style.display = 'block';
+                            isFieldValid = false;
+                        }
+                        
+                        if (sDate) {
+                            // Validate end date is after start date
+                            const startDateTime = new Date(sDate);
+                            
+                            if (endDateTime < startDateTime) {
+                                document.getElementById('endDateError').style.display = 'block';
+                                isFieldValid = false;
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'reason':
+                    const reason = document.getElementById('reason').value;
+                    const reasonLength = getCharCount(reason);
+                    const reasonIsOnlySpaces = reason.trim() === '';
+                    const reasonStartsWithSpace = reason.startsWith(' ');
+                    const reasonHasAlphabetical = /[a-zA-Z]/.test(reason);
+                    const reasonHasConsecutiveSpaces = /\s{2,}/.test(reason);
+                    const reasonOnlySpecialCharsOrDigits = !reasonHasAlphabetical && /[0-9!@#$%^&*(),.?":{}|<>]/.test(reason);
+                    
+                    // Reset all error messages
+                    document.getElementById('reasonError').style.display = 'none';
+                    document.getElementById('reasonSpaceError').style.display = 'none';
+                    document.getElementById('reasonStartSpaceError').style.display = 'none';
+                    document.getElementById('reasonAlphaError').style.display = 'none';
+                    document.getElementById('reasonSpecialError').style.display = 'none';
+                    document.getElementById('reasonMultiSpaceError').style.display = 'none';
+                    document.getElementById('reasonMaxLengthError').style.display = 'none';
+                    
+                    if (reasonLength > 300) {
+                        document.getElementById('reasonMaxLengthError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (reasonIsOnlySpaces) {
+                        document.getElementById('reasonSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (reasonStartsWithSpace) {
+                        document.getElementById('reasonStartSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (!reasonHasAlphabetical) {
+                        document.getElementById('reasonAlphaError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (reasonOnlySpecialCharsOrDigits) {
+                        document.getElementById('reasonSpecialError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (reasonHasConsecutiveSpaces) {
+                        document.getElementById('reasonMultiSpaceError').style.display = 'block';
+                        isFieldValid = false;
+                    } else if (reasonLength < 5) {
+                        document.getElementById('reasonError').style.display = 'block';
+                        isFieldValid = false;
+                    }
+                    break;
+            }
+            
+            return isFieldValid;
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate each field if it's been touched
+            for (const field in touchedFields) {
+                if (touchedFields[field] && !validateField(field)) {
+                    isValid = false;
+                }
+            }
+
+            // Also check if any required field is empty
+            const empName = document.getElementById('empName').value.trim();
+            const empid = document.getElementById('empid').value.trim();
+            const leaveType = document.getElementById('leaveType').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const reason = document.getElementById('reason').value.trim();
+            const reasonCharCount = getCharCount(reason);
+            const empNameCharCount = getCharCount(empName);
+            
+            if (!empName || !empid || !leaveType || !startDate || !endDate || !reason || reasonCharCount > 300 || empNameCharCount > 60) {
+                isValid = false;
+            }
+
+            // Validate maternity leave duration
+            if (!validateMaternityDuration()) {
+                isValid = false;
+            }
+
+            document.getElementById('submitBtn').disabled = !isValid;
+            return isValid;
+        }
+
+        async function submitLeaveRequest(event) {
+            event.preventDefault();
+            
+            // Set all fields as touched for full validation on submit
+            for (const field in touchedFields) {
+                touchedFields[field] = true;
+            }
+            
+            if (!validateForm()) {
+                // Show all relevant error messages
+                validateField('empName');
+                validateField('empid');
+                validateField('leaveType');
+                validateField('startDate');
+                validateField('endDate');
+                validateField('reason');
+                validateMaternityDuration();
+                return false;
+            }
+
+            // Check for duplicate or same-day requests
+            const empid = document.getElementById('empid').value;
+            const startDate = document.getElementById('startDate').value;
+            const requestDate = new Date().toISOString();
+
+            if (await isDuplicateRequest(empid, startDate, requestDate)) {
+                alert('A leave request for this employee with overlapping dates or on the same day already exists.');
+                return false;
+            }
+
+            const request = {
+                employeeName: document.getElementById('empName').value,
+                employeeId: document.getElementById('empid').value,
+                leaveType: document.getElementById('leaveType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                reason: document.getElementById('reason').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/leave-requests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    alert(errorData.error || 'Failed to submit leave request');
+                    return false;
+                }
+
+                alert('Leave request submitted successfully');
+                document.getElementById('leaveRequestForm').reset();
+                document.getElementById('empNameCount').textContent = 'Characters (excluding spaces): 0 / 60';
+                document.getElementById('empidCount').textContent = 'Characters (excluding spaces): 0';
+                document.getElementById('reasonCount').textContent = 'Characters (excluding spaces): 0 / 300';
+
+                // Reset touched fields and alphabetical flag
+                for (const field in touchedFields) {
+                    touchedFields[field] = false;
+                }
+                reasonHasAlphabetical = false;
+                
+                // Hide all error messages
+                const errorElements = document.querySelectorAll('.error, .date-error');
+                errorElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+                
+                document.getElementById('submitBtn').disabled = true;
+            } catch (error) {
+                console.error('Error submitting leave request:', error);
+                alert('An error occurred while submitting the request');
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
