@@ -1,0 +1,14 @@
+# ---- build & run node backend ----
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+# copy package metadata first for layer caching
+COPY package*.json ./
+RUN npm ci --only=production        # fast, reproducible install
+
+# copy source and start
+COPY . .
+EXPOSE 3003
+CMD ["node", "server.js"]
+
