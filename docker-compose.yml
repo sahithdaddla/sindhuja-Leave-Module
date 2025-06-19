@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  # ----------------- DATABASE -----------------
+  postgres:
+    image: postgres:16-alpine          # small, up‑to‑date image
+    container_name: leave_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: leave_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+    ports:
+      - "5802:5432"                    # host 5802 → container 5432
+
+  # ----------------- BACK‑END API --------------
+  backend:
+    build: ./Backend                   # uses Backend/Dockerfile (see below)
+    container_name: leave_backend
+    depends_on:
+      - postgres
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: admin123
+      PGDATABASE: leave_management
+      PGPORT: 5432
+      PORT: 3003
+    ports:
+      - "3003:3003"                    # host 3003 → container 3003
+    restart: unless-stopped
+
+  # ----------------- EMPLOYEE UI --------------
+  employee-leave:
+    build: ./Employee-leave            # uses Employee-leave/Dockerfile
+    container_name: employee_leave_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8150:80"                      # host 8150 → nginx 80 (static site)
+    restart: unless-stopped
+
+  # ----------------- HR UI --------------------
+  hr-leave:
+    build: ./HR-leave                  # uses HR-leave/Dockerfile
+    container_name: hr_leave_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8151:80"                      # host 8151 → nginx 80
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
