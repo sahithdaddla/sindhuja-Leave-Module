@@ -213,7 +213,7 @@
         // Get the current leave requests from the backend
         async function getLeaveRequests() {
             try {
-                const response = await fetch('http://51.21.202.216:3003/api/leave-requests');
+                const response = await fetch('http://13.60.56.21:3003/api/leave-requests');
                 return await response.json();
             } catch (error) {
                 console.error('Error fetching leave requests:', error);
@@ -784,7 +784,7 @@
             };
 
             try {
-                const response = await fetch('http://51.21.202.216:3003/api/leave-requests', {
+                const response = await fetch('http://13.60.56.21:3003/api/leave-requests', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(request)
