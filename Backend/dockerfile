@@ -9,6 +9,6 @@ RUN npm ci --only=production        # fast, reproducible install
 
 # copy source and start
 COPY . .
-EXPOSE 3003
+EXPOSE 3202
 CMD ["node", "server.js"]
 
