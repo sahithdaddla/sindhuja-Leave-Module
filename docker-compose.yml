@@ -4,7 +4,7 @@ services:
   # ----------------- DATABASE -----------------
   postgres:
     image: postgres:16-alpine          # small, up‑to‑date image
-    container_name: leave_pg
+    container_name: leave1_pg
     restart: unless-stopped
     environment:
       POSTGRES_DB: leave_management
